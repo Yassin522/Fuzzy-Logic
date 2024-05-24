@@ -1,3 +1,19 @@
+import subprocess
+import sys
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# List of packages to ensure are installed
+packages = ['scikit-fuzzy', 'matplotlib', 'plotly']
+
+# Install packages if not already installed
+for package in packages:
+    try:
+        __import__(package)
+    except ImportError:
+        install(package)
+
 import streamlit as st
 import numpy as np
 import skfuzzy as fuzz
@@ -5,7 +21,6 @@ from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 from io import BytesIO
 import plotly.graph_objects as go
-
 
 def plot_to_image():
     buf = BytesIO()
@@ -28,7 +43,6 @@ def main():
     quality.automf(3)
     service.automf(3)
 
-   
     tip['low'] = fuzz.trimf(tip.universe, [0, 0, 13])
     tip['medium'] = fuzz.trimf(tip.universe, [0, 13, 25])
     tip['high'] = fuzz.trimf(tip.universe, [13, 25, 25])
@@ -77,7 +91,6 @@ def main():
     fig = go.Figure(data=[go.Surface(x=x, y=y, z=z)])
     fig.update_layout(title='Tip Amount Based on Quality and Service', scene=dict(xaxis_title='Quality', yaxis_title='Service', zaxis_title='Tip'))
     st.plotly_chart(fig, use_container_width=True)
-
 
 if __name__ == "__main__":
     main()
